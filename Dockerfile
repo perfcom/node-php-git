@@ -17,19 +17,24 @@ RUN apk add \
 
 ENV CFLAGS="$CFLAGS -D_GNU_SOURCE"
 
-RUN docker-php-ext-install \
-	bz2 \
-	calendar \
-	exif \
-	opcache \
-	pcntl \
-	shmop \
-	soap \
-	sockets \
-	sodium \
-	sysvsem \
-	sysvshm \
-	xsl
+
+docker-php-ext-install -j$(nproc) \
+    bcmath \
+    ctype \
+    dom \
+    fileinfo \
+    gd \
+    intl \
+    mbstring \
+    opcache \
+    pcntl \
+    pdo_mysql \
+    simplexml \
+    soap \
+    xsl \
+    zip \
+    sockets \
+    && docker-php-ext-enable bcmath ctype dom fileinfo gd intl mbstring opcache pcntl pdo_mysql simplexml soap xsl zip sockets
 
 RUN apk add --virtual build-deps autoconf gcc make g++ zlib-dev \
 	&& pecl channel-update pecl.php.net \
