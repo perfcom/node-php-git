@@ -7,18 +7,13 @@ RUN apk add --no-cache libstdc++ libgcc jq git curl unzip sshpass openssh-client
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer --2.2
 
 # Install PHP extensions
-RUN apk add \
-		bzip2-dev \
-		libsodium-dev \
-		libxml2-dev \
-		libxslt-dev \
-		linux-headers \
-		yaml-dev
+RUN apk add --no-cache \
+    # Install dependencies for PHP extensions
+    oniguruma-dev icu-dev libxml2-dev libpng-dev libjpeg-turbo-dev freetype-dev libxslt-dev \
+    libzip-dev zip zlib-dev libmcrypt-dev gmp-dev libintl
 
-ENV CFLAGS="$CFLAGS -D_GNU_SOURCE"
-
-
-docker-php-ext-install -j$(nproc) \
+RUN docker-php-ext-configure gd --with-freetype --with-jpeg \
+    && docker-php-ext-install -j$(nproc) \
     bcmath \
     ctype \
     dom \
@@ -35,11 +30,6 @@ docker-php-ext-install -j$(nproc) \
     zip \
     sockets \
     && docker-php-ext-enable bcmath ctype dom fileinfo gd intl mbstring opcache pcntl pdo_mysql simplexml soap xsl zip sockets
-
-RUN apk add --virtual build-deps autoconf gcc make g++ zlib-dev \
-	&& pecl channel-update pecl.php.net \
-	&& pecl install yaml-2.2.3 && docker-php-ext-enable yaml \
-	&& apk del build-deps
 
 COPY --from=node /usr/local/lib/node_modules /usr/local/lib/node_modules
 COPY --from=node /usr/local/include/node /usr/local/include/node
