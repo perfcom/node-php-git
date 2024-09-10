@@ -1,7 +1,7 @@
 FROM node:21-alpine AS node
 FROM php:8.1.27-cli-alpine
 
-RUN apk add --no-cache libstdc++ libgcc jq git curl unzip sshpass openssh-client rsync
+RUN apk add --no-cache libstdc++ libgcc jq git curl unzip sshpass openssh-client rsync bash
 
 # Install Composer
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer --2.2
