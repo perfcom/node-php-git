@@ -10,7 +10,7 @@ RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local
 RUN apk add --no-cache \
     # Install dependencies for PHP extensions
     oniguruma-dev icu-dev libxml2-dev libpng-dev libjpeg-turbo-dev freetype-dev libxslt-dev \
-    libzip-dev zip zlib-dev libmcrypt-dev gmp-dev libintl
+    libzip-dev zip zlib-dev libmcrypt-dev gmp-dev libintl linux-headers
 
 RUN docker-php-ext-configure gd --with-freetype --with-jpeg \
     && docker-php-ext-install -j$(nproc) \
