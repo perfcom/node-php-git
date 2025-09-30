@@ -17,9 +17,13 @@ RUN apt-get update && \
     apt-get install -y --no-install-recommends \
         lsb-release ca-certificates curl wget gnupg2 software-properties-common \
         apt-transport-https locales patch diffutils \
-        unzip zip git jq patch ssh-client vim rsync && \
+        unzip zip jq patch ssh-client vim rsync && \
     locale-gen en_US.UTF-8 && \
     update-locale LANG=en_US.UTF-8
+
+RUN add-apt-repository ppa:git-core/ppa && \
+    apt-get update && \
+    apt-get -y install git
 
 
 # PHP (Ondřej Surý PPA – gives every version 7.2-8.4)  :contentReference[oaicite:0]{index=0}
