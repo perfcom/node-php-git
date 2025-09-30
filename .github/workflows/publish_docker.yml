@@ -13,6 +13,12 @@ jobs:
       contents: read
       packages: write
 
+    strategy:
+      matrix:
+        php: ["8.2", "8.3"]
+        composer: ["2.2", "2"]
+      fail-fast: false
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -27,17 +33,14 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Extract versions
-        id: vars
-        run: |
-          php=$(grep 'ARG PHP_VERSION' Dockerfile | cut -d= -f2)
-          composer=$(grep 'ARG COMPOSER_VERSION' Dockerfile | cut -d= -f2)
-          echo "tag=$php-$composer" >> $GITHUB_OUTPUT
-
       - name: Build and push multi-arch image
         uses: docker/build-push-action@v6
         with:
           context: .
           push: true
           platforms: linux/amd64,linux/arm64
-          tags: ghcr.io/${{ github.repository }}:${{ steps.vars.outputs.tag }}
+          build-args: |
+            PHP_VERSION=${{ matrix.php }}
+            COMPOSER_VERSION=${{ matrix.composer }}
+          tags: |
+            ghcr.io/${{ github.repository }}:${{ matrix.php }}-${{ matrix.composer }}

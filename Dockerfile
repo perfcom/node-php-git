@@ -3,7 +3,7 @@ FROM ubuntu:22.04
 ARG DEBIAN_FRONTEND=noninteractive
 
 # Allow PHP version and composer version to be overriden
-ARG PHP_VERSION=8.2.29
+ARG PHP_VERSION=8.2
 ARG COMPOSER_VERSION=2.2
 
 ENV LANG=en_US.UTF-8 \
