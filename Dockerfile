@@ -1,5 +1,5 @@
 FROM node:22-alpine AS node
-FROM php:8.2.27-cli-alpine
+FROM php:8.2-cli-alpine
 
 RUN apk add --no-cache libstdc++ libgcc jq git curl unzip sshpass openssh-client rsync bash
 
