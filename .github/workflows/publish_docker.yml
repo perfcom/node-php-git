@@ -9,6 +9,7 @@ on:
       tag:
         description: "Image tag (e.g. 8.2-2.2)"
         required: true
+        default: latest
 
 jobs:
   build:
