@@ -4,12 +4,6 @@ on:
   push:
     branches:
       - main
-  workflow_dispatch:
-    inputs:
-      tag:
-        description: "Image tag (e.g. 8.2-2.2)"
-        required: true
-        default: latest
 
 jobs:
   build:
@@ -33,11 +27,17 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
+      - name: Extract versions
+        id: vars
+        run: |
+          php=$(grep 'ARG PHP_VERSION' Dockerfile | cut -d= -f2)
+          composer=$(grep 'ARG COMPOSER_VERSION' Dockerfile | cut -d= -f2)
+          echo "tag=$php-$composer" >> $GITHUB_OUTPUT
+
       - name: Build and push multi-arch image
         uses: docker/build-push-action@v6
         with:
           context: .
           push: true
           platforms: linux/amd64,linux/arm64
-          tags: |
-            ghcr.io/${{ github.repository }}:${{ github.event.inputs.tag }}
+          tags: ghcr.io/${{ github.repository }}:${{ steps.vars.outputs.tag }}
