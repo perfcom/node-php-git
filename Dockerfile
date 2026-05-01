@@ -1,4 +1,4 @@
-FROM ubuntu:22.04
+FROM ubuntu:24.04
 
 ARG DEBIAN_FRONTEND=noninteractive
 
@@ -20,6 +20,8 @@ RUN apt-get update && \
         unzip zip jq patch ssh-client vim rsync && \
     locale-gen en_US.UTF-8 && \
     update-locale LANG=en_US.UTF-8
+
+RUN apt-get install python3-launchpadlib
 
 RUN add-apt-repository ppa:git-core/ppa && \
     apt-get update && \
@@ -43,6 +45,7 @@ RUN mkdir -p /run/php && \
         php${PHP_VERSION}-intl \
         php${PHP_VERSION}-mbstring \
         php${PHP_VERSION}-mysql \
+        php${PHP_VERSION}-pgsql \
         php${PHP_VERSION}-mysqli \
         php${PHP_VERSION}-xml \
         php${PHP_VERSION}-zip \
