@@ -1,0 +1,30 @@
+name: Update dependencies
+
+on:
+  schedule:
+    - cron: '0 4 * * 1'  # Every Monday 04:00 UTC
+  workflow_dispatch:
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: write
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Run update script
+        run: |
+          sudo apt-get install -y jq
+          ./scripts/update.sh
+
+      - name: Commit if changed
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add 8.2/Dockerfile 8.3/Dockerfile 8.4/Dockerfile README.md
+          git diff --staged --quiet && echo "Already up to date." && exit 0
+          git commit -m "chore: update Composer and Node to latest patch versions"
+          git push
