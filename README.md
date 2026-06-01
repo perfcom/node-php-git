@@ -18,7 +18,7 @@ Each image is published as a multi-arch manifest (`linux/amd64` + `linux/arm64`)
 | Tool     | Version |
 |----------|---------|
 | Node.js  | `22.22.3` (LTS 22) |
-| Composer | `2.9.8` |
+| Composer | `2.10.0` |
 | Git      | Alpine latest |
 
 ## PHP Extensions
