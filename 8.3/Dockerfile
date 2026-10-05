@@ -1,4 +1,4 @@
-ARG NODE_VERSION=22.23.2
+ARG NODE_VERSION=22.23.3
 FROM node:${NODE_VERSION}-alpine AS node
 
 FROM php:8.3-cli-alpine
