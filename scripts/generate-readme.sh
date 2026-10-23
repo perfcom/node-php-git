@@ -12,6 +12,29 @@ FIRST_DF="${DIRS[0]}/Dockerfile"
 NODE_VERSION=$(grep    '^ARG NODE_VERSION='     "$FIRST_DF" | cut -d= -f2)
 COMPOSER_VERSION=$(grep '^ARG COMPOSER_VERSION=' "$FIRST_DF" | cut -d= -f2)
 
+# --- Resolve the exact PHP patch version shipped in each upstream php image ---
+# Reads PHP_VERSION from the image config on Docker Hub (no docker daemon needed).
+command -v jq   >/dev/null 2>&1 || { echo "Error: jq is required (brew install jq)"; exit 1; }
+command -v curl >/dev/null 2>&1 || { echo "Error: curl is required"; exit 1; }
+
+REGISTRY="https://registry-1.docker.io/v2/library/php"
+REGISTRY_TOKEN=$(curl -fsSL "https://auth.docker.io/token?service=registry.docker.io&scope=repository:library/php:pull" | jq -r .token)
+
+php_patch_version() {
+  local tag="$1" digest config
+  digest=$(curl -fsSL -H "Authorization: Bearer ${REGISTRY_TOKEN}" \
+    -H "Accept: application/vnd.oci.image.index.v1+json" \
+    -H "Accept: application/vnd.docker.distribution.manifest.list.v2+json" \
+    "${REGISTRY}/manifests/${tag}" |
+    jq -r '[.manifests[] | select(.platform.os == "linux" and .platform.architecture == "amd64")][0].digest')
+  config=$(curl -fsSL -H "Authorization: Bearer ${REGISTRY_TOKEN}" \
+    -H "Accept: application/vnd.oci.image.manifest.v1+json" \
+    -H "Accept: application/vnd.docker.distribution.manifest.v2+json" \
+    "${REGISTRY}/manifests/${digest}" | jq -r .config.digest)
+  curl -fsSL -H "Authorization: Bearer ${REGISTRY_TOKEN}" "${REGISTRY}/blobs/${config}" |
+    jq -r '.config.Env[] | select(startswith("PHP_VERSION=")) | ltrimstr("PHP_VERSION=")'
+}
+
 ALL_EXT="bcmath, bz2, curl, dom, exif, ftp, gd, intl, mbstring, mysqli, opcache, pdo_mysql, pdo_pgsql, pgsql, simplexml, soap, sockets, xml, xsl, zip"
 
 # --- Build PHP version table rows ---
@@ -19,7 +42,9 @@ PHP_ROWS=""
 for dir in "${DIRS[@]}"; do
   df="${dir}/Dockerfile"
   php_ver=$(grep '^FROM php:' "$df" | head -1 | sed 's/FROM php:\(.*\)-cli-alpine.*/\1/')
-  PHP_ROWS="${PHP_ROWS}| \`${php_ver}\` | \`${REPO}:${php_ver}\` | \`docker pull ${REPO}:${php_ver}\` |
+  php_patch=$(php_patch_version "${php_ver}-cli-alpine")
+  [[ -n "$php_patch" ]] || { echo "Error: could not resolve PHP version for php:${php_ver}-cli-alpine"; exit 1; }
+  PHP_ROWS="${PHP_ROWS}| \`${php_ver}\` | \`${php_patch}\` | \`${REPO}:${php_ver}\` | \`docker pull ${REPO}:${php_ver}\` |
 "
 done
 
@@ -31,10 +56,12 @@ Alpine-based Docker images bundling PHP, Node.js, Composer, and Git — built fo
 
 ## Images
 
-| PHP  | Image | Pull |
-|------|-------|------|
+| PHP  | Version | Image | Pull |
+|------|---------|-------|------|
 ${PHP_ROWS}
 Each image is published as a multi-arch manifest (\`linux/amd64\` + \`linux/arm64\`).
+The PHP version column shows the patch release in the upstream \`php:<version>-cli-alpine\` image
+at the time this README was generated.
 
 ## Versions
 

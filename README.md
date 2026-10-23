@@ -4,14 +4,16 @@ Alpine-based Docker images bundling PHP, Node.js, Composer, and Git — built fo
 
 ## Images
 
-| PHP  | Image | Pull |
-|------|-------|------|
-| `8.2` | `ghcr.io/perfcom/node-php-git:8.2` | `docker pull ghcr.io/perfcom/node-php-git:8.2` |
-| `8.3` | `ghcr.io/perfcom/node-php-git:8.3` | `docker pull ghcr.io/perfcom/node-php-git:8.3` |
-| `8.4` | `ghcr.io/perfcom/node-php-git:8.4` | `docker pull ghcr.io/perfcom/node-php-git:8.4` |
-| `8.5` | `ghcr.io/perfcom/node-php-git:8.5` | `docker pull ghcr.io/perfcom/node-php-git:8.5` |
+| PHP  | Version | Image | Pull |
+|------|---------|-------|------|
+| `8.2` | `8.2.35` | `ghcr.io/perfcom/node-php-git:8.2` | `docker pull ghcr.io/perfcom/node-php-git:8.2` |
+| `8.3` | `8.3.36` | `ghcr.io/perfcom/node-php-git:8.3` | `docker pull ghcr.io/perfcom/node-php-git:8.3` |
+| `8.4` | `8.4.27` | `ghcr.io/perfcom/node-php-git:8.4` | `docker pull ghcr.io/perfcom/node-php-git:8.4` |
+| `8.5` | `8.5.12` | `ghcr.io/perfcom/node-php-git:8.5` | `docker pull ghcr.io/perfcom/node-php-git:8.5` |
 
 Each image is published as a multi-arch manifest (`linux/amd64` + `linux/arm64`).
+The PHP version column shows the patch release in the upstream `php:<version>-cli-alpine` image
+at the time this README was generated.
 
 ## Versions
 
