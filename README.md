@@ -19,7 +19,7 @@ at the time this README was generated.
 
 | Tool     | Version |
 |----------|---------|
-| Node.js  | `22.23.3` (LTS 22) |
+| Node.js  | `22.23.4` (LTS 22) |
 | Composer | `2.10.3` |
 | Git      | Alpine latest |
 
