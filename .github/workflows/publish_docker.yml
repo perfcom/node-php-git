@@ -62,7 +62,7 @@ jobs:
       - name: Create and push multi-arch manifest
         run: |
           IMAGE="ghcr.io/${{ github.repository }}"
-          docker manifest create "${IMAGE}:${{ matrix.php }}" \
+          docker buildx imagetools create \
+            --tag "${IMAGE}:${{ matrix.php }}" \
             "${IMAGE}:${{ matrix.php }}-amd64" \
             "${IMAGE}:${{ matrix.php }}-arm64"
-          docker manifest push "${IMAGE}:${{ matrix.php }}"
