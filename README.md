@@ -19,8 +19,8 @@ at the time this README was generated.
 
 | Tool     | Version |
 |----------|---------|
-| Node.js  | `22.23.4` (LTS 22) |
-| Composer | `2.11.1` |
+| Node.js  | `22.23.5` (LTS 22) |
+| Composer | `2.11.2` |
 | Git      | Alpine latest |
 
 ## PHP Extensions
